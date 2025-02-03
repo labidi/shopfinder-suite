@@ -1,0 +1,13 @@
+{
+  "name": "saddemlabidi/shopfinder-suite",
+  "description": "ShopFinder Suite Metapackage",
+  "version": "1.0.0",
+  "type": "metapackage",
+  "require": {
+    "saddemlabidi/module-shopfinder": "1.2.0"
+  },
+  "license": [
+    "OSL-3.0",
+    "AFL-3.0"
+  ]
+}
