@@ -5,7 +5,7 @@
   "type": "metapackage",
   "require": {
     "saddemlabidi/module-shopfinder": "1.2.0",
-    "saddemlabidi/module-shopfinder-admin-ui": "1.0.3"
+    "saddemlabidi/module-shopfinder-admin-ui": "1.0.4"
   },
   "license": [
     "OSL-3.0",
