@@ -1,7 +1,7 @@
 {
   "name": "saddemlabidi/shopfinder-suite",
   "description": "ShopFinder Suite Metapackage",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "type": "metapackage",
   "require": {
     "saddemlabidi/module-shopfinder": "1.2.0",
