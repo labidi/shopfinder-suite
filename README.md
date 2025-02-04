@@ -48,3 +48,32 @@ curl -s https://raw.githubusercontent.com/markshust/docker-magento/master/lib/on
 #### Run installation commande via composer 
 ```bach
 bin/composer require saddemlabidi/shopfinder-suite
+```
+#### After installation we should have all module suites installed in our vendor folder
+
+![image](https://github.com/user-attachments/assets/35018306-c6eb-426b-9676-519155ec987d)
+
+#### Make sure to enable all modules and run setup upgrade and code compilation : 
+
+```bash
+./bin/magento module enable Saddemlabidi_Shopfinder Saddemlabidi_ShopfinderAdminUi Saddemlabidi_ShopfinderGraphQl Saddemlabidi_ShopfinderRest
+./bin/magento setup:upgrade
+./bin/magento setup:di:compile
+
+```
+
+#### Navigate to the admin area , you should be able to to see a new menu item in the content section area : 
+
+![image](https://github.com/user-attachments/assets/eab1d4bc-6170-45c4-a88d-32cf7dde036c)
+
+
+## Unit/api-functional tests
+
+In order to do so create we need to navigate to src/dev/tests/api-functional/testsuite.
+Create our test class under this folder structere src/dev/tests/api-functional/testsuite/Saddemlabidi/ShopfinderGraphQl/ShopGraphQlTest.php:9 
+
+
+
+
+
+
