@@ -70,7 +70,165 @@ bin/composer require saddemlabidi/shopfinder-suite
 ## Unit/api-functional tests
 
 In order to do so create we need to navigate to src/dev/tests/api-functional/testsuite.
-Create our test class under this folder structere src/dev/tests/api-functional/testsuite/Saddemlabidi/ShopfinderGraphQl/ShopGraphQlTest.php:9 
+Create our test class under this folder structere src/dev/tests/api-functional/testsuite/Saddemlabidi/ShopfinderGraphQl/ShopGraphQlTest.php
+
+ShopGraphQlTest class content : 
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace Saddemlabidi\ShopfinderGraphQl\Test\Integration;
+
+use Magento\TestFramework\TestCase\GraphQlAbstract;
+use Magento\Framework\GraphQl\Exception\GraphQlInputException;
+
+class ShopGraphQlTest extends GraphQlAbstract
+{
+    /**
+     * Test fetching all shops via GraphQL.
+     */
+    public function testGetAllShopsGraphQl(): void
+    {
+        $query = <<<QUERY
+{
+    shops {
+        id
+        identifier
+        name
+        country
+        image
+        longitude_latitude
+        created_at
+        updated_at
+    }
+}
+QUERY;
+        $response = $this->graphQlQuery($query);
+        $this->assertArrayHasKey('shops', $response, 'Expected "shops" key in response');
+        $this->assertIsArray($response['shops'], 'Expected "shops" to be an array');
+    }
+
+    /**
+     * Test updating a shop via a GraphQL mutation.
+     *
+     * This test assumes a shop with id 1 exists. Adjust the values as needed.
+     */
+    public function testUpdateShopGraphQl(): void
+    {
+        $mutation = <<<MUTATION
+mutation {
+  updateShop(input: {
+    id: 1,
+    identifier: "shop-001-updated-graphql",
+    name: "Updated Shop Name GraphQL",
+    country: "USA",
+    image: "updated-image-graphql.jpg",
+    longitude_latitude: "40.7128,-74.0060"
+  }) {
+    id
+    identifier
+    name
+    country
+    image
+    longitude_latitude
+    created_at
+    updated_at
+  }
+}
+MUTATION;
+        $response = $this->graphQlMutation($mutation);
+        $updatedShop = $response['updateShop'];
+        $this->assertEquals("shop-001-updated-graphql", $updatedShop['identifier']);
+        $this->assertEquals("Updated Shop Name GraphQL", $updatedShop['name']);
+    }
+
+    /**
+     * Test fetching a single shop by its identifier via GraphQL.
+     */
+    public function testGetShopByIdentifierGraphQl(): void
+    {
+        $query = <<<QUERY
+{
+    shop(identifier: "shop-001-updated-graphql") {
+        id
+        identifier
+        name
+        country
+        image
+        longitude_latitude
+        created_at
+        updated_at
+    }
+}
+QUERY;
+        $response = $this->graphQlQuery($query);
+        $this->assertArrayHasKey('shop', $response, 'Expected "shop" key in response');
+        $shop = $response['shop'];
+        $this->assertEquals("shop-001-updated-graphql", $shop['identifier']);
+    }
+
+    /**
+     * Test that attempting to delete a shop via GraphQL results in an error.
+     */
+    public function testDeleteShopGraphQlNotAllowed(): void
+    {
+        $mutation = <<<MUTATION
+mutation {
+  deleteShop(id: 1)
+}
+MUTATION;
+        try {
+            $this->graphQlMutation($mutation);
+            $this->fail('Expected an exception when trying to delete a shop via GraphQL.');
+        } catch (GraphQlInputException $e) {
+            $this->assertStringContainsString('Deleting shops via API is not allowed.', $e->getMessage());
+        }
+    }
+
+    /**
+     * Test that querying a non-existent shop by identifier returns an error.
+     */
+    public function testGetShopByIdentifierNotFoundGraphQl(): void
+    {
+        $query = <<<QUERY
+{
+    shop(identifier: "non-existent-graphql") {
+        id
+        identifier
+        name
+    }
+}
+QUERY;
+        try {
+            $this->graphQlMutation($query);
+            $this->fail('Expected an exception when shop is not found.');
+        } catch (GraphQlInputException $e) {
+            $this->assertStringContainsString("'No shop found", $e->getMessage());
+        }
+    }
+}
+
+```
+
+this test class has 5 functional : 
+- testGetShopByIdentifierNotFoundGraphQl
+- testDeleteShopGraphQlNotAllowed
+- testGetShopByIdentifierGraphQl
+- testUpdateShopGraphQl
+
+To to able to run these testes we need first to duplicate this src/dev/tests/api-functional/phpunit_graphql.xml.dist into phpunit_graphql.xml.
+Then change value of TESTS_BASE_URL to match the value of your store  Url.
+
+And the last step is to execute this command from the racine folder of our projet  :
+
+```bash
+vendor/bin/phpunit -c dev/tests/api-functional/phpunit_graphql.xml dev/tests/api-functional/testsuite/Saddemlabidi/ShopfinderGraphQl/ShopGraphQlTest.php
+PHPUnit 9.6.21 by Sebastian Bergmann and contributors.
+```
+
+
 
 
 
